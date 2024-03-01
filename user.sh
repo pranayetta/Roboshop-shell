@@ -13,9 +13,9 @@ rm -rf /app &>>/tmp/roboshop.log
 mkdir /app &>>/tmp/roboshop.log
 
 echo -e "\e[32mDownloading the application code and extracting\e[0m"
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue.zip &>>/tmp/roboshop.log
+curl -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user.zip &>>/tmp/roboshop.log
 cd /app &>>/tmp/roboshop.log
-unzip /tmp/catalogue.zip &>>/tmp/roboshop.log
+unzip /tmp/user.zip &>>/tmp/roboshop.log
 
 echo -e "\e[32mInstalling the dependencies\e[0m"
 cd /app &>>/tmp/roboshop.log
