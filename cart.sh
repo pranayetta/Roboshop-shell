@@ -24,9 +24,9 @@ npm install &>>/tmp/roboshop.log
 echo -e "\e[32mCopying the cart service file\e[0m"
 cp /home/centos/Roboshop-shell/cart.service /etc/systemd/system/cart.service &>>/tmp/roboshop.log
 
-echo -e "\e[32mreloading\e[0m"
+echo -e "\e[32mReloading\e[0m"
 systemctl daemon-reload &>>/tmp/roboshop.log
 
-echo -e "\e[32menable and start\e[0m"
+echo -e "\e[32mEnable and start\e[0m"
 systemctl enable cart &>>/tmp/roboshop.log
 systemctl restart cart &>>/tmp/roboshop.log
