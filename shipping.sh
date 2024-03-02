@@ -14,9 +14,9 @@ cd /app &>>/tmp/roboshop.log
 unzip /tmp/shipping.zip &>>/tmp/roboshop.log
 
 echo -e "\e[32mInstalling the dependencies\e[0m"
-cd /app
-mvn clean package
-mv target/shipping-1.0.jar shipping.jar
+cd /app &>>/tmp/roboshop.log
+mvn clean package &>>/tmp/roboshop.log
+mv target/shipping-1.0.jar shipping.jar &>>/tmp/roboshop.log
 
 echo -e "\e[32mCopying the catalogue service file\e[0m"
 cp /home/centos/Roboshop-shell/shipping.service /etc/systemd/system/shipping.service &>>/tmp/roboshop.log
