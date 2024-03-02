@@ -1,5 +1,5 @@
 echo -e "\e[32mInstalling python\e[0m"
-dnf install golang -y
+dnf install golang -y &>>/tmp/roboshop.log
 
 echo -e "\e[32mAdding the application user\e[0m"
 useradd roboshop &>>/tmp/roboshop.log
