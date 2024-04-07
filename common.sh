@@ -37,3 +37,15 @@ nodejs() {
     systemctl enable $component &>>$log_file
     systemctl restart $component &>>$log_file
 }
+
+mongodb_schema_setup() {
+      echo -e "\e[32mCopying the user service file\e[0m"
+      cp /home/centos/Roboshop-shell/user.service /etc/systemd/system/user.service &>>/tmp/roboshop.log
+
+      echo -e "\e[32mreloading\e[0m"
+      systemctl daemon-reload &>>/tmp/roboshop.log
+
+      echo -e "\e[32menable and start\e[0m"
+      systemctl enable user &>>/tmp/roboshop.log
+      systemctl restart user &>>/tmp/roboshop.log
+}
