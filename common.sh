@@ -8,16 +8,21 @@ app_presetup() {
     useradd roboshop &>>$log_file
 
     echo -e "${color}Creating the application directory${nocolor}"
-    rm -rf $app_path &>>$log_file
-    mkdir $app_path &>>$log_file
+    rm -rf ${app_path} &>>$log_file
+    mkdir ${app_path} &>>$log_file
 
     echo -e "${color}Downloading the application code and extracting${nocolor}"
     curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &${log_file}
-    cd /app &${log_file}
+    cd ${app_path} &${log_file}
     unzip /tmp/${component}.zip &${log_file}
+
 }
 
 systemd_setup() {
+
+    echo -e "${color}Copying the $component service file${nocolor}"
+    cp /home/centos/Roboshop-shell/$component.service /etc/systemd/system/$component.service &>>$log_file
+
     echo -e "${color}reloading${nocolor}"
     systemctl daemon-reload &${log_file}
 
@@ -35,13 +40,9 @@ nodejs() {
 
     app_presetup
 
-
     echo -e "${color}Installing the dependencies${nocolor}"
-    cd $app_path &>>$log_file
+    cd ${app_path} &>>$log_file
     npm install &>>$log_file
-
-    echo -e "${color}Copying the $component service file${nocolor}"
-    cp /home/centos/Roboshop-shell/$component.service /etc/systemd/system/$component.service &>>$log_file
 
     systemd_setup
 }
@@ -50,7 +51,12 @@ mongodb_schema_setup() {
       echo -e "${color}Copying the ${component} service file${nocolor}"
       cp /home/centos/Roboshop-shell/${component}.service /etc/systemd/system/${component}.service &${log_file}
 
-      systemd_setup
+      echo -e "${color}Install Mongod client${nocolor}"
+      dnf install mongodb-org-shell -y
+
+      echo -e "${color}Load Schema${nocolor}"
+      mongo --host mongodb-dev.pranaydevops.me <${app_path}/schema/${component}.js
+
 }
 
 mysql_schema_setup() {
@@ -58,7 +64,7 @@ mysql_schema_setup() {
    dnf install mysql -y &${log_file}
 
    echo -e "${color}Load schema${nocolor}"
-   mysql -h mysql-dev.pranaydevops73.me -uroot -pRoboShop@1 < /app/schema/${component}.sql &${log_file}
+   mysql -h mysql-dev.pranaydevops73.me -uroot -pRoboShop@1 < ${app_path}/schema/${component}.sql &${log_file}
 }
 
 maven() {
@@ -68,19 +74,24 @@ maven() {
   app_presetup
 
   echo -e "${color}Installing the dependencies${nocolor}"
-  cd /app &${log_file}
   mvn clean package &${log_file}
   mv target/${component}-1.0.jar ${component}.jar &${log_file}
 
-  echo -e "${color}Copying the catalogue service file${nocolor}"
-  cp /home/centos/Roboshop-shell/${component}.service /etc/systemd/system/${component}.service &${log_file}
-
   mysql_schema_setup
-
-  echo -e "${color}Restart${nocolor}"
-  systemctl restart ${component} &${log_file}
 
   systemd_setup
 
+}
+
+python() {
+  echo -e "${color}Installing python${nocolor}"
+  dnf install python36 gcc python3-devel -y &>>${log_file}
+
+  app_presetup
+
+  echo -e "${color}Installing the dependencies${nocolor}"
+  pip3.6 install -r requirements.txt &>>${log_file}
+
+  systemd_setup
 
 }
